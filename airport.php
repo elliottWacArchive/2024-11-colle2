@@ -13,11 +13,17 @@ if (!is_string($str)) {
     exit();
 }
 
-if (strlen($str) < 31) {
-    add_space($str);
+global $color;
+global $size;
+$size = 31;
+
+if ($argc > 3) {
+    $size = intval($argv[3]);
 }
 
-global $color;
+if (strlen($str) < $size + 1) {
+    add_space($str, $size);
+}
 
 if ($argc > 2) {
     switch ($argv[2]) {
@@ -41,19 +47,19 @@ if ($argc > 2) {
     }
 }
 
-function add_space(&$str)
+function add_space(&$str, $size)
 {
     $strlen = strlen($str);
-    for ($i = 0; $i < (31 - $strlen); $i++) {
+    for ($i = 0; $i < (($size + 1) - $strlen); $i++) {
         $str = $str . " ";
     }
 }
 
-function defilement($str, $color)
+function defilement($str, $color, $size)
 {
     $strlen = strlen($str);
     for ($i = 0; $i < $strlen; $i++) {
-        $newstr = cut_str($str);
+        $newstr = cut_str($str, $size);
         echo "\033[" . $color . "m$newstr\n";
         usleep(500000);
         @system('clear');
@@ -63,12 +69,12 @@ function defilement($str, $color)
     }
 }
 
-function cut_str($str)
+function cut_str($str, $size)
 {
     $strlen = strlen($str);
     $newstr = "";
-    if ($strlen > 30) {
-        for ($i = 0; $i != 30; $i++) {
+    if ($strlen > $size) {
+        for ($i = 0; $i != $size; $i++) {
             $newstr = $newstr . $str[$i];
         }
     }
@@ -76,5 +82,5 @@ function cut_str($str)
 }
 
 while (true) {
-    defilement($str, $color);
+    defilement($str, $color, $size);
 }
